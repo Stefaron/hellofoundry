@@ -7,6 +7,8 @@ import {Counter} from "../src/Counter.sol";
 contract CounterTest is Test {
     Counter public counter;
 
+    address public alice = makeAddr("alice");
+
     function setUp() public {
         counter = new Counter();
         counter.setNumber(0);
@@ -21,4 +23,15 @@ contract CounterTest is Test {
         counter.setNumber(x);
         assertEq(counter.number(), x);
     }
+
+    function test_setPrice() public {
+        counter.setPrice(100);
+        assertEq(counter.price(), 100, 'price should be 100');
+        console.log("price", counter.price());
+
+        vm.prank(alice);
+        vm.expectRevert("Only owner can set price");
+        counter.setPrice(200);
+    }
+
 }
